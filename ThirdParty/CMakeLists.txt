@@ -12,8 +12,8 @@ target_include_directories(freertos_config
         ${PROJECT_SOURCE_DIR}/Core/Inc  # Where your FreeRTOSConfig.h lives
 )
 
-# Add FreeRTOS kernel as subdirectory
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS FreeRTOS-Kernel)
+# Add SEGGER RTT and SystemView BEFORE FreeRTOS (core libs only)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/SEGGER SEGGER)
 
 # Include SYSVIEW include files needed for FreeRTOSConfig.h
 target_include_directories(freertos_config INTERFACE
@@ -22,8 +22,14 @@ target_include_directories(freertos_config INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/SEGGER/SEGGER
 )
 
-# Add SEGGER RTT and SystemView
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/SEGGER SEGGER)
+# Add FreeRTOS kernel as subdirectory
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS FreeRTOS-Kernel)
+
+# Link FreeRTOS kernel to SEGGER SystemView (for tracing support)
+target_link_libraries(freertos_kernel PUBLIC segger_sysview)
+
+# Now add the FreeRTOS-specific SEGGER integration (after freertos_kernel exists)
+add_segger_sysview_freertos()
 
 target_compile_options(freertos_kernel PRIVATE
         ### Gnu/Clang C Options

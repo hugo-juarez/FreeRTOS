@@ -36,35 +36,47 @@ add_library(segger_sysview STATIC
 target_include_directories(segger_sysview PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/SEGGER
     ${CMAKE_CURRENT_SOURCE_DIR}/Config
+    ${CMAKE_CURRENT_SOURCE_DIR}/OS
 )
 
 target_link_libraries(segger_sysview PUBLIC segger_rtt)
 
 # ============================================================================
 # SEGGER SystemView FreeRTOS Integration
-# Links with FreeRTOS kernel for full OS tracing
+# Must be added AFTER freertos_kernel is defined
 # ============================================================================
-add_library(segger_sysview_freertos STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/OS/SEGGER_SYSVIEW_FreeRTOS.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Config/SEGGER_SYSVIEW_Config_FreeRTOS.c
-)
+function(add_segger_sysview_freertos)
+    add_library(segger_sysview_freertos STATIC
+        ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/OS/SEGGER_SYSVIEW_FreeRTOS.c
+        ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Config/SEGGER_SYSVIEW_Config_FreeRTOS.c
+    )
 
-target_include_directories(segger_sysview_freertos PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/OS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Config
-)
+    target_include_directories(segger_sysview_freertos PUBLIC
+        ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/OS
+        ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Config
+    )
 
-target_link_libraries(segger_sysview_freertos PUBLIC
-    segger_sysview
-    freertos_kernel
-)
+    target_link_libraries(segger_sysview_freertos PUBLIC
+        segger_sysview
+        freertos_kernel
+    )
+
+    target_compile_options(segger_sysview_freertos PRIVATE
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color=always>
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wall>
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wextra>
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-conversion>
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-sign-conversion>
+        $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wno-unused-parameter>
+    )
+endfunction()
 
 # ============================================================================
-# Compiler options for all SEGGER libraries
+# Compiler options for core SEGGER libraries
 # ============================================================================
-set(SEGGER_TARGETS segger_rtt segger_rtt_syscalls segger_sysview segger_sysview_freertos)
+set(SEGGER_CORE_TARGETS segger_rtt segger_rtt_syscalls segger_sysview)
 
-foreach(target ${SEGGER_TARGETS})
+foreach(target ${SEGGER_CORE_TARGETS})
     target_compile_options(${target} PRIVATE
         $<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color=always>
         $<$<COMPILE_LANG_AND_ID:C,GNU>:-Wall>
