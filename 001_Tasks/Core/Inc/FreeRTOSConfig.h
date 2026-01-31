@@ -41,7 +41,7 @@
  *----------------------------------------------------------*/
 
 /* Ensure stdint is only used by the compiler, and not the assembler. */
-#ifdef __ICCARM__
+#if defined(__ICCARM__) || defined(__GNUC__) || defined(__CC_ARM)
 	#include <stdint.h>
 	extern uint32_t SystemCoreClock;
 #endif
