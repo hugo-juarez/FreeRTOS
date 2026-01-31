@@ -217,6 +217,7 @@ static void task1_handler(void* params)
   while (1)
   {
     printf("%s\n",(char *)params);
+    taskYIELD();
   }
 }
 
@@ -225,6 +226,7 @@ static void task2_handler(void* params)
   while (1)
   {
     printf("%s\n",(char *)params);
+    taskYIELD();
   }
 }
 
