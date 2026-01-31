@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "FreeRTOS.h"
+#include "task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +51,8 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void task1_handler(void* params);
+static void task2_handler(void* params);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -65,7 +68,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  TaskHandle_t task1_handle;
+  TaskHandle_t task2_handle;
+  BaseType_t status = pdFALSE;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -74,6 +79,15 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  status = xTaskCreate(task1_handler, "Task1", 200, "Hello world from Task-1", 2, &task1_handle);
+  configASSERT(status == pdPASS);
+
+  status = xTaskCreate(task2_handler, "Task2", 200, "Hello world from Task-2", 2, &task2_handle);
+  configASSERT(status == pdPASS);
+
+  // Start the FreeRTOS scheduler
+  vTaskStartScheduler();
+  // We will never return unless there is insufficient memory in the heap.
 
   /* USER CODE END Init */
 
@@ -193,6 +207,22 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+static void task1_handler(void* params)
+{
+  while (1)
+  {
+    printf("%s\n",(char *)params);
+  }
+}
+
+static void task2_handler(void* params)
+{
+  while (1)
+  {
+    printf("%s\n",(char *)params);
+  }
+}
 
 /* USER CODE END 4 */
 
