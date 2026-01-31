@@ -39,6 +39,29 @@ obj/
 *.swp
 *.swo
 
+# VS Code
+.vscode/
+
+# clangd
+.cache/
+
+# Eclipse / STM32CubeIDE
+*.cbp
+*.cproject
+*.project
+.settings/
+
+# Additional build directories
+Debug/
+Release/
+
+# Debug session files
+*.jlink
+*.cfg
+
+# Core dumps
+core
+
 # OS files
 .DS_Store
 Thumbs.db
