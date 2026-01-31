@@ -15,6 +15,16 @@ target_include_directories(freertos_config
 # Add FreeRTOS kernel as subdirectory
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS FreeRTOS-Kernel)
 
+# Include SYSVIEW include files needed for FreeRTOSConfig.h
+target_include_directories(freertos_config INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/SEGGER/Config
+    ${CMAKE_CURRENT_SOURCE_DIR}/SEGGER/OS
+    ${CMAKE_CURRENT_SOURCE_DIR}/SEGGER/SEGGER
+)
+
+# Add SEGGER RTT and SystemView
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/SEGGER SEGGER)
+
 target_compile_options(freertos_kernel PRIVATE
         ### Gnu/Clang C Options
         $<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color=always>
