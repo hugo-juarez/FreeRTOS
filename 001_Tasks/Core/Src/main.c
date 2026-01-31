@@ -79,16 +79,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  status = xTaskCreate(task1_handler, "Task1", 200, "Hello world from Task-1", 2, &task1_handle);
-  configASSERT(status == pdPASS);
-
-  status = xTaskCreate(task2_handler, "Task2", 200, "Hello world from Task-2", 2, &task2_handle);
-  configASSERT(status == pdPASS);
-
-  // Start the FreeRTOS scheduler
-  vTaskStartScheduler();
-  // We will never return unless there is insufficient memory in the heap.
-
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -101,6 +92,16 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+
+  status = xTaskCreate(task1_handler, "Task1", 200, "Hello world from Task-1", 2, &task1_handle);
+  configASSERT(status == pdPASS);
+
+  status = xTaskCreate(task2_handler, "Task2", 200, "Hello world from Task-2", 2, &task2_handle);
+  configASSERT(status == pdPASS);
+
+  // Start the FreeRTOS scheduler
+  vTaskStartScheduler();
+  // We will never return unless there is insufficient memory in the heap.
 
   /* USER CODE END 2 */
 
