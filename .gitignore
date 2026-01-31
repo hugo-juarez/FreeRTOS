@@ -12,6 +12,7 @@ compile_commands.json
 
 # Build directories
 build/
+build-cubeide/
 out/
 bin/
 obj/
