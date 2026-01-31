@@ -73,4 +73,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     # Add user defined libraries
     freertos_kernel
     freertos_config
+    segger_sysview_freertos
 )
